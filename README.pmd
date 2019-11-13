@@ -1,4 +1,19 @@
-# Pràctica 6 - RSA
+---
+title: "Pràctica 6 - Algoritme de clau pública"
+author: [Marc Sànchez Pifarré, GEINF (UDG-EPS)]
+date: 27/10/2019
+subject: "Udg - Eps"
+tags: [Seguretat i protecció de dades]
+subtitle: "Tutor de la pràctica : Francesc Castro"
+titlepage: true
+titlepage-color: 3C9F53
+titlepage-text-color: FFFFFF
+titlepage-rule-height: 4
+...
+
+
+\newpage
+
 
 # Què inclou l'entrega? 
 
@@ -64,8 +79,7 @@ El fitxer amb el text codificat es desa en bytes per tal que la seva lectura sig
 
 Funcions d'ordre superior emprades per a la lleugeresa del codi i els imports.  
 
-
-```python
+```{python}
 
 import os
 import sys
@@ -85,16 +99,13 @@ def loop(b, function, byteNumber):
     return a
 ```
 
-
-
 Per implementar l'algoritme s'han utilitzat les instruccions definides en les transparències de l'assignatura. 
 
 ## 1. Triar dos nombres aleatòris prou grans i que siguin primers. 
 
 La següent funció crida a la funció d'ordre superior demanant-li que executi a cada nombre generat aleatòriament el test de primalitat de fermat fins a 10, (1 .. 9). D'aquesta manera passarà pels nombres recomanats bàsics, el 2, 3, 5, 7 i 9. 
 
-
-```python
+```{python}
 
 def getSecurePrime(byteNumber):
 # a > 0
@@ -109,14 +120,8 @@ q = getSecurePrime(pLength + 1)
 
 print(p)
 print(q)
-```
 
 ```
-60985840573698424789677586243562727591073886742382981600037315696576231018431
-2251464580107834429899098652708681450681089703925957612056629370020199793188671
-```
-
-
 
 D'aquesta manera es poden generar p i q, s'utilitza el nombre entrat per consola per determinar la mida de p i s'utiltiza 1 byte més per determinar la mida de q. Aixó és per què p i q han d'estar separats en valor però propers en nombre de bits. Considero que una diferència de 8 bits fixe és escalable. 
 
@@ -124,33 +129,19 @@ D'aquesta manera es poden generar p i q, s'utilitza el nombre entrat per consola
 
 Calcula N és tant simple com fer p * q. 
 
-
-```python
+```{python}
 N = p*q
 print(N)
 ```
-
-```
-137307459939785256365935124196789756137861182767754427905574545485588766400535466097966476861844594040884298143413187770783621957127336983551219467261395201
-```
-
-
 
 ## 3. Calcular la funció phi(N)
 
 La funció phi(n) es calcula mitjançant la multiplicació dels dos nombres anteriors corresponent als primers p i q. 
 
-
-```python
+```{python}
 euler = (p-1)*(q-1)
 print(euler)
 ```
-
-```
-137307459939785256365935124196789756137861182767754427905574545485588766400533153647545795328989905264645345899234915607192953616533680316865502691237188100
-```
-
-
 
 ## 4. Triar exponent clau pública 
 
@@ -161,8 +152,7 @@ Aquest nombre l'anomenem e i correpon a l'exponent de la clau pública, ha de co
 
 Per seleccionar-lo s'ha seguit : 
 
-
-```python
+```{python}
 def getSecureEuler(byteNumber, euler):
 # a > 0
 # retorna el valor per un exponent de mida byteNumber coprimer amb euler
@@ -171,12 +161,6 @@ def getSecureEuler(byteNumber, euler):
 e = getSecureEuler(32, euler)
 print(e)
 ```
-
-```
-105146145322594843373145589344145854927258684153354662635356377698526665106393
-```
-
-
 
 En aquest cas s'utilitza una mida fixe de 32 bytes peró es podria fer dinàmica. 
 
@@ -188,17 +172,10 @@ Amb tots aquests ingredients ja podem generar la clau pública, es compón del n
 
 Per trobar l'exponent de la clau privada únicament s'ha de fer l'invers modular de la l'exponent de la clau pública.
 
-
-```python
+```{python}
 d = invers_modular(e, euler)
 print(d)
 ```
-
-```
-76657370226694963309495682747247627505096262265361502734273395648333433573859840542290835931798210405097099047058165075381305540497955463447344373058296857
-```
-
-
 
 ## 7. Clau privada
 
@@ -208,8 +185,7 @@ Amb els ingredients que tenim fins ara ja podem construïr també la clau privad
 
 Dona't un missatge m, utiltizem les següents funcions per codificar i descodificar. 
 
-
-```python
+```{python}
 
 def encode(string, e, n):
 # string és el text per xifrar, e és exponent, b és mòdul
@@ -232,9 +208,8 @@ def decode(decbytes, d, n):
     decodedInt = potencia_modular_eficient(toDecode, d, n)
     decoded = str(decodedInt.to_bytes((decodedInt.bit_length() + 7) // 8, 'big'), 'utf-8')
     return decoded
+
 ```
-
-
 
 La codificació es realitza sobre m, i s'utilitza la propietat c = m^e (mod N). on c és el text codificat. La transformació del text a enter es fa utiltizant les funcions de text -> bytes i tot seguit bytes -> enter. S'aplica la potència modular i tot seguit es transforma el nombre resultant en bytes. El text codificat es desa en bytes. 
 
@@ -242,8 +217,7 @@ Per a la descodificació recollim els bytes que s'han codificat i tot seguit els
 
 Veiem l'exemple amb un text curt. 
 
-
-```python
+```{python}
 t = "pràctica molt llarga complint la correctesa de les claus..."
 
 bytesCodificats = encode(t, e, N)
@@ -255,23 +229,13 @@ print("El text descodificat : ")
 print(textDescodificat)
 ```
 
-```
-El text codificat en bytes :
-b'\x07\xdf\xe4\x93\x86\x9f?\x14\xac\x9c{;\x03\xd0uJy\x01\xc1U\xde-\xe2\xf3\xa3\x948\xee\x87\x10U\x8c34|v`\x18?xT\xb7\x85\xe9Z\x7f5~x\xab\n\xe7\xf8\xe0\xef\xc9\xfc\xa6\x9b\xf00-\xdb\xde\xf5'
-El text descodificat :
-pràctica molt llarga complint la correctesa de les claus...
-```
-
-
-
-# Fem el hacker bruto
+# Fem el hacker a lo bruto
 
 El què es pretén en aquest cas és explicar com es s'hauria de fer per poder trobar l'exponent d que s'utilitza dins de la clau privada. La clau privada està composta per dos parts, l'exponent d i el nombre N. La fortalesa de l'algoritme rau en poder trobar la la factorització de N en nombres primers, és a dir, trobar p i q. Aquest problema és exponencial en nombre de bits i té tractament molt llarg. 
 
 En aquest exemple fem l'execució d'un mètode exponencial però amb una clau curta per poder tenir temps que acabi l'execució abans que acabi l'univers. Treballem amb bytes per tant generem dos nombres enters amb llargada 1 i 2 bytes, respectivament seran p i q
 
-
-```python
+```{python}
 
 def breakKeys(N):
 # N > 0. 
@@ -286,56 +250,14 @@ print(p*q)
 print(breakKeys(p*q))
 ```
 
-```
-466687
-[13, 35899]
-```
-
-
-
 Com podem veure ja tenim la p i la q, cosa que s'haurien de desar amb el màxim secret possible o de fet es podrien llençar a les escombreries per què no es requereixen un cop ja tens les claus generades. A partir d'aquí ja podríem trobar la funció phi(n) i conseqüentment la clau d i podriem desxifrar el missatge. **Recordem que l'algoritme és públic!**
 
 Evidenment quan es generen claus s'utilitzen nombres molt llargs. Un exemple d'una possible clau que es podria fer servir seria amb 128 bytes, és a dir, 1024 bits. El mètode següent genera un parell de claus reben una llargada en nombre de **bytes**. 
 
-
-```python
+```{python}
 keys = getKeys(128)
 print(keys)
 ```
-
-```
-Pas 1 -> Generem dos nombres aleatoris grans i similars en nombre de
-bits pero que difereixin, (que no siguin propers) :
-p =
-178118345797852065462709324148957190376400984488503590373193990250164600353067885687890646066036725380359430649314066441258336067816321231231922270069808420341681610365873812979723081720317552594061860135653266155923375914118792751843444255031706813787533884144865052962882057807117386489356261559457755407659
-q =
-4556596576414555137276155416979619035538996119955295502077420840065813765221222688620837714733509577726419472695245072378569976841130347757956946459727267092061121322158116902628472217984025338699347415124469809512884284891153211000759376203423602154935235023382817965589476000027058851096594568629500714479377
-
-Pas 2 -> Calculem n, on n=p*q :
-n =
-811613444659116584935539445459564691070044202203636694831351644839041678274385405641460990714265284402933529267576403428897950216137229165727130248878460053486340762619760005309711366410849775867007248789777691290501862486929126535209432730873513502790475370452300342107058378673473092513222127746243948355446672218840059234509694028571041526915804123116435947659994719371600123352145868504083541732123821445717691940916416018166016580337992879994728598743293825189619498306637408742709125339871555286192529465021348391139879036371161712601163425919341955530804871657164442860177714067348772819032075858881982583348443
-
-Pas 3 -> Claculem Euler(n) :
-euler =
-811613444659116584935539445459564691070044202203636694831351644839041678274385405641460990714265284402933529267576403428897950216137229165727130248878460053486340762619760005309711366410849775867007248789777691290501862486929126535209432730873513502790475370452300342107058378673473092513222127746243948355441937503917846827306955163829912950689888726011992148567544104541284144986571577929774813371324275142610913037571856879346188267429046211005539730013496749677216695374113418027100930040167212394899120189761225315471071375565889708848560605460886646562082102749636759841625356009514596581446125028693024113461408
-
-Pas 4 -> Cerquem un e € Naturals i coprimer amb euler(n):
-e =
-16424436459722425918032656399461273059409553344600160041464537678277161318591
-
-Pas 5 -> Cerquem una d € Naturals i e*d (mod euler(n)) == 1 (mod
-euler(n))
-d =
-604813919099147507935689819263401355240892780277318322587421773757818663436558139846873627394078663698950010184983620138498490598680254407678030065039676872188641891722452542847585011939715481508076205436466757292041713465092206884915366921719235590763046295053242544935613149000604319801312548876170710616096631871796025904207768472661234673539332827263713099188673494854252311702256912674054582023325717447015323485208314785979655631890573438912136244437367020508688066128135994562911507949816354362492024279687120149189755652627443012910597191110503070512420039600456448386792187785397041930147680035300319823414431
-
-
-([811613444659116584935539445459564691070044202203636694831351644839041678274385405641460990714265284402933529267576403428897950216137229165727130248878460053486340762619760005309711366410849775867007248789777691290501862486929126535209432730873513502790475370452300342107058378673473092513222127746243948355446672218840059234509694028571041526915804123116435947659994719371600123352145868504083541732123821445717691940916416018166016580337992879994728598743293825189619498306637408742709125339871555286192529465021348391139879036371161712601163425919341955530804871657164442860177714067348772819032075858881982583348443,
-16424436459722425918032656399461273059409553344600160041464537678277161318591],
-[811613444659116584935539445459564691070044202203636694831351644839041678274385405641460990714265284402933529267576403428897950216137229165727130248878460053486340762619760005309711366410849775867007248789777691290501862486929126535209432730873513502790475370452300342107058378673473092513222127746243948355446672218840059234509694028571041526915804123116435947659994719371600123352145868504083541732123821445717691940916416018166016580337992879994728598743293825189619498306637408742709125339871555286192529465021348391139879036371161712601163425919341955530804871657164442860177714067348772819032075858881982583348443,
-604813919099147507935689819263401355240892780277318322587421773757818663436558139846873627394078663698950010184983620138498490598680254407678030065039676872188641891722452542847585011939715481508076205436466757292041713465092206884915366921719235590763046295053242544935613149000604319801312548876170710616096631871796025904207768472661234673539332827263713099188673494854252311702256912674054582023325717447015323485208314785979655631890573438912136244437367020508688066128135994562911507949816354362492024279687120149189755652627443012910597191110503070512420039600456448386792187785397041930147680035300319823414431])
-```
-
-
 
 La generació d'aquests nombres és costosa i realitza cerca per ensaig i error per trobar els possibles primers. Aquesta pràxis és recomenada per què si la generació és totalment aleatòria és més difícil que es pugui interpretar com es realitza el procediment per escollir els nombres primers. Podria induïr a podar branques a l'hora de provar possibilitats per força bruta tal i com hem fet amb la factorització. 
 
@@ -345,4 +267,4 @@ En aquesta pràctica s'ha treballat un algoritme de clau pública basada en l'ex
 
 No s'ha complert exhaustivament amb les característiques que han de tenir els valors enters p, q, N, e i d degut al temps de dedicació i al sobreesforç que representava. Els temps de càlcul podrien ser molt costosos i les proves s'allargaven. 
 
-S'ha entés perfectament les propietats d'un algoritme de clau pública i quines son les seves fortaleses així com s'ha deduït que les seves debilitats rauen en la tria dels nombres anteriorment esmentats.  
+L'esforç s'ha posat doncs a entendre perfectament les propietats d'un algoritme de clau pública i quines son les seves fortaleses així com s'ha deduït que les seves debilitats rauen en la tria dels nombres esmentats. 
